@@ -1,0 +1,24 @@
+{
+  "name": "sword-cli",
+  "version": "0.1.0",
+  "description": "sword脚手架",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": {
+    "sword": "index.js"
+  },
+  "keywords": [],
+  "author": "puppet<https://github.com/puppet-666>",
+  "license": "ISC",
+  "dependencies": {
+    "chalk": "^4.1.0",
+    "commander": "^6.2.1",
+    "download-git-repo": "^3.0.2",
+    "git-promise": "^1.0.0",
+    "inquirer": "^7.3.3",
+    "ora": "^5.2.0",
+    "progress": "^2.0.3"
+  }
+}
