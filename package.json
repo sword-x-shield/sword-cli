@@ -13,12 +13,14 @@
     "脚手架",
     "sword"
   ],
-  "author": "puppet<https://github.com/puppet-666>",
+  "author": "sword-x-shield<https://github.com/sword-x-shield>",
   "private": "false",
   "license": "ISC",
   "dependencies": {
     "chalk": "^4.1.0",
     "commander": "^6.2.1",
+    "eslint": "^7.17.0",
+    "fs-extra": "^9.0.1",
     "git-promise": "^1.0.0",
     "inquirer": "^7.3.3",
     "ora": "^5.2.0"
