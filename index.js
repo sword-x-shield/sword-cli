@@ -23,16 +23,10 @@ program
   .option('-f, --force', '忽略文件夹检查，如果已存在则直接覆盖')
   .action((projectName, destination) => {
     new InitCommand(projectName, destination)
-    // .then(answers => {
-    //     require('./download.js')(templateList[answers.template], `${answers.name}`, '')
-    // })
-    // .catch(error => {
-    //   if(error.isTtyError) {
-    //     // Prompt couldn't be rendered in the current environment
-    //   } else {
-    //     // Something else when wrong
-    //   }
-    // })
   })
 
-program.parse(process.argv) // 解析变量
+try {
+    program.parse(process.argv);// 解析变量
+} catch (error) {
+    console.log('err: ', error)
+}
