@@ -26,7 +26,7 @@ program
   })
 
 try {
-    program.parse(process.argv);// 解析变量
+  program.parse(process.argv)// 解析变量
 } catch (error) {
-    console.log('err: ', error)
+  console.log('err: ', error)
 }
