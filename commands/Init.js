@@ -10,7 +10,7 @@ const packageListOrigin = require('../config/packageList.json')
 const {
   exit
 } = require('process')
-const inquirerConfig = require('../config/inquirerConfig')
+const InquirerConfig = require('../config/inquirerConfig')
 const {
   parseCmdParams,
   log,
@@ -48,16 +48,12 @@ class Creator {
   }
   // 询问并设置项目名称
   async askAndSetName() {
-    const {
-      name
-    } = await inquirer.prompt(inquirerConfig.name)
+    const { name } = await inquirer.prompt(InquirerConfig.name)
     this.name = name
   }
   // 询问并设置选定模板
   async askAndSetTemplate() {
-    const {
-      template
-    } = await inquirer.prompt(inquirerConfig.template)
+    const { template } = await inquirer.prompt(InquirerConfig.template)
     this.template = template
   }
 
@@ -73,7 +69,7 @@ class Creator {
     if (this.isChooseSimpleTemplate()) {
       const {
         packageList
-      } = await inquirer.prompt(inquirerConfig.packageList)
+      } = await inquirer.prompt(InquirerConfig.packageList)
       this.packageList = packageList
     }
   }
@@ -83,44 +79,34 @@ class Creator {
     return genTargetPath(this.name)
   }
   // 检查文件夹是否存在
-  checkFolderExist(targetPath) {
-    // eslint-disable-next-line no-async-promise-executor
-    return new Promise(async(resolve, reject) => {
-      // 如果create附加了--force或-f参数，则直接执行覆盖操作
-      if (this.cmdParams.force) {
-        await fse.removeSync(targetPath)
-        return resolve()
-      }
-      try {
-        // 否则进行文件夹检查
-        const isTarget = await fse.pathExistsSync(targetPath)
-        if (!isTarget) {
-          return resolve()
-        }
-        const {
-          recover
-        } = await inquirer.prompt(inquirerConfig.folderExist)
-        if (recover === 'cover') {
-          await fse.removeSync(targetPath)
-          return resolve()
-        } else if (recover === 'newFolder') {
-          const {
-            inputNewName
-          } = await inquirer.prompt(inquirerConfig.rename)
-          this.name = inputNewName
-          return resolve()
-        } else {
-          exit(1)
-        }
-      } catch (error) {
-        log.error(`[sword-cli]Error:${error}`)
+  async checkFolderExist() {
+    const targetPath = this.getAbsPath()
+    // 如果create附加了--force或-f参数，则直接执行覆盖操作
+    if (this.cmdParams.force) {
+      await fs.removeSync(targetPath)
+      return
+    }
+    try {
+      // 否则进行文件夹检查
+      const isTarget = await fs.pathExistsSync(targetPath)
+      if (!isTarget) return
+      const { recover } = await inquirer.prompt(InquirerConfig.folderExist)
+      if (recover === 'cover') {
+        fs.removeSync(targetPath)
+        return
+      } else if (recover === 'newFolder') {
+        const { newName } = await inquirer.prompt(InquirerConfig.rename)
+        this.name = newName
+        await this.checkFolderExist()
+        return
+      } else {
         exit(1)
       }
-    })
+    } catch (error) {
+      log.error(`${error}`)
+      exit(1)
+    }
   }
-  /**
-     * @todo 实现下载
-     */
   async download(branch = '') {
     const localPath = this.name
     const _branch = branch ? `-b ${branch} --` : '--'
