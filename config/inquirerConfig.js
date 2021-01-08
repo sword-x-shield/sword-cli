@@ -30,7 +30,7 @@ module.exports = {
   }],
   // 重命名的询问参数
   rename: [{
-    name: 'inputNewName',
+    name: 'newName',
     type: 'input',
     message: '请输入新的项目名称: '
   }],
