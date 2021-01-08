@@ -1,6 +1,5 @@
 const chalk = require('chalk')
 const childProcess = require('child_process')
-const runCmd = require('../utils')
 // 封装log函数
 exports.log = {
   warning(msg = '') {
@@ -20,8 +19,8 @@ exports.getGitUser = () => {
   return new Promise(async(resolve, reject) => {
     const user = {}
     try {
-      const [name] = await runCmd('git config user.name')
-      const [email] = await runCmd('git config user.email')
+      const [name] = await this.runCmd('git config user.name')
+      const [email] = await this.runCmd('git config user.email')
       if (name) user.name = name.replace(/\n/g, '')
       if (email) user.email = `<${email || ''}>`.replace(/\n/g, '')
     } catch (error) {
