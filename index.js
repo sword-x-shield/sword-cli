@@ -1,6 +1,5 @@
 #!/usr/bin/env node 
 const { program } = require('commander')
-const inquirer = require('inquirer'); 
 const fs =require("fs");
 
 program
@@ -10,38 +9,7 @@ program
     .action( () => {
         const data = fs.readFileSync('./config/banner.txt');
         console.log(data.toString());      
-        const templateList = require('./config/template.json')
-        const templateNameList = []
-        for (item in templateList) {
-          templateNameList.push(item)
-        }
-        inquirer
-        .prompt([
-          {
-            type: 'input',
-            name: 'name',
-            message: '请输入项目名:',
-            default: function () {
-              return 'sword-cli-project'
-            },
-          },
-          {
-            type: 'list',
-            name: 'template',
-            message: '请选择模板:',
-            choices: templateNameList,
-          },
-        ])
-        .then(answers => {
-            require('./download.js')(templateList[answers.template], `${answers.name}`, '')
-        })
-        .catch(error => {
-          if(error.isTtyError) {
-            // Prompt couldn't be rendered in the current environment
-          } else {
-            // Something else when wrong
-          }
-        })
+        require('./action.js')()
     })
 
 program.parse(process.argv) // 解析变量
