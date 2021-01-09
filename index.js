@@ -25,7 +25,7 @@ program
 program
   .command('init [name]') // 初始化命令
   .description('初始化项目文件')
-  .usage('<command> [name] [options]')
+  .usage('[name] [options]')
   .option('-f, --force', '忽略文件夹检查，如果已存在则直接覆盖')
   .action((projectName, destination) => {
     new InitCommand(projectName, destination)
@@ -33,11 +33,15 @@ program
 
 program
   .command('list')
-  .description('列出当前库中包含的模板/可选库等等。')
+  .description('列出当前库中包含的模板/可选库等等')
   .option('-t, --template', '列出当前脚手架所有的项目模板')
   .action(destination => {
     new ListCommand(destination)
   })
 
 program.parse(process.argv)// 解析变量
+// 什么都不输入时显示帮助
+if (!program.args.length) {
+  program.help()
+}
 
