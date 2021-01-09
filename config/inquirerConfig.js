@@ -43,6 +43,14 @@ module.exports = {
     message: '请输入新的项目名称: '
   }],
   // 可选依赖包参数
+  isNeedPackage: [{
+    name: 'isNeedPackage',
+    type: 'list',
+    message: '您当前选择为简易模板，需要加载额外的依赖吗？',
+    choices: ['yes', 'no'],
+    default: 'no'
+  }],
+  // 可选依赖包参数
   packageList: [{
     name: 'packageList',
     type: 'checkbox',

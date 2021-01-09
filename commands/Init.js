@@ -35,13 +35,13 @@ class Creator {
     this.name || await this.askAndSetName()
     await this.askAndSetTemplate()
     await this.askAndSetPkgManager()
-    // this.isChooseSimpleTemplate() && await this.askAndSetPackage()
+    this.isChooseSimpleTemplate() && await this.askAndSetPackage()
     await this.checkFolderExist()
     await this.download()
     await this.usePlugins()
     await this.updatePkgFile()
-    await this.initGit()
-    await this.runApp()
+    // await this.initGit()
+    // await this.runApp()
   }
   // 询问并设置项目名称
   async askAndSetName() {
@@ -60,8 +60,11 @@ class Creator {
   }
   // 非完整模板询问是否安装其他依赖
   async askAndSetPackage() {
-    const { packageList } = await inquirer.prompt(InquirerConfig.packageList)
-    this.packageList = packageList
+    const { isNeedPackage } = await inquirer.prompt(InquirerConfig.isNeedPackage)
+    if (isNeedPackage === 'yes') {
+      const { packageList } = await inquirer.prompt(InquirerConfig.packageList)
+      this.packageList = packageList
+    }
   }
 
   // 选择的是否是简易模板
