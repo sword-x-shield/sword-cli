@@ -17,7 +17,9 @@ const showBanner = () => {
 showBanner()
 
 program
+  .name('sword')
   .version(packageInfo.version, '-v, --version', '显示sword-cli的当前版本') // --version 版本
+  .helpOption('-h, --help', '显示sword-cli的帮助')
   .usage('<command> [options]')
 
 program
