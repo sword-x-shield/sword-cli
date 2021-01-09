@@ -4,12 +4,9 @@ const path = require('path')
 const fs = require('fs')
 const fse = require('fs-extra')
 const git = require('git-promise')
-const chalk = require('chalk')
 const templateList = require('../config/template.json')
 const packageListOrigin = require('../config/packageList.json')
-const {
-  exit
-} = require('process')
+const { exit } = require('process')
 const InquirerConfig = require('../config/inquirerConfig')
 const {
   parseCmdParams,
@@ -37,7 +34,8 @@ class Creator {
   async init() {
     this.name || await this.askAndSetName()
     await this.askAndSetTemplate()
-    await this.askAndSetPackage()
+    await this.askAndSetPkgManager()
+    // this.isChooseSimpleTemplate() && await this.askAndSetPackage()
     await this.checkFolderExist()
     await this.download()
     await this.usePlugins()
@@ -53,23 +51,23 @@ class Creator {
   // 询问并设置选定模板
   async askAndSetTemplate() {
     const { template } = await inquirer.prompt(InquirerConfig.template)
-    this.template = template
+    this.template = templateList.find(i => i.name === template)
   }
-
-  // 是否选择简易模板
-  isChooseSimpleTemplate() {
-    const selectedTemplate = templateList.find(i => i === this.template)
-    return selectedTemplate.simple || false
+  // 询问并设置包选择器
+  async askAndSetPkgManager() {
+    const { manager } = await inquirer.prompt(InquirerConfig.manager)
+    this.pkgManager = manager
   }
-
   // 非完整模板询问是否安装其他依赖
   async askAndSetPackage() {
-    if (this.isChooseSimpleTemplate()) {
-      const { packageList } = await inquirer.prompt(InquirerConfig.packageList)
-      this.packageList = packageList
-    }
+    const { packageList } = await inquirer.prompt(InquirerConfig.packageList)
+    this.packageList = packageList
   }
 
+  // 选择的是否是简易模板
+  isChooseSimpleTemplate() {
+    return this.template.simple || false
+  }
   // 获取绝对路径
   getAbsPath() {
     return genTargetPath(this.name)
@@ -79,16 +77,16 @@ class Creator {
     const targetPath = this.getAbsPath()
     // 如果create附加了--force或-f参数，则直接执行覆盖操作
     if (this.cmdParams.force) {
-      await fs.removeSync(targetPath)
+      await fse.removeSync(targetPath)
       return
     }
     try {
       // 否则进行文件夹检查
-      const isTarget = await fs.pathExistsSync(targetPath)
+      const isTarget = await fse.pathExistsSync(targetPath)
       if (!isTarget) return
       const { recover } = await inquirer.prompt(InquirerConfig.folderExist)
       if (recover === 'cover') {
-        fs.removeSync(targetPath)
+        fse.removeSync(targetPath)
         return
       } else if (recover === 'newFolder') {
         const { newName } = await inquirer.prompt(InquirerConfig.rename)
@@ -106,11 +104,11 @@ class Creator {
   async download(branch = '') {
     const localPath = this.name
     const _branch = branch ? `-b ${branch} --` : '--'
-    const _repoPath = `clone ${_branch} ${templateList[this.template]} ./${localPath}`
+    const _repoPath = `clone ${_branch} ${this.template.url} ./${localPath}`
     this.spinner.start('正在下载模板,请稍等...')
     try {
       await git(_repoPath)
-      this.spinner.succeed('模板下载成功')
+      this.spinner.succeed('模板下载成功！')
       // 删除git文件追踪
       this.deleteGit(localPath)
     } catch (error) {
@@ -120,12 +118,11 @@ class Creator {
 
   // 更新package.json中的信息
   async updatePkgFile() {
-    this.spinner.start('正在更新package.json...')
     const pkgPath = path.resolve(this.getAbsPath(), 'package.json')
+    if (!fs.existsSync(pkgPath)) throw Error('找不到 package.json 文件')
+    this.spinner.start('正在更新package.json...')
     const unnecessaryKey = ['keywords', 'license', 'files']
-    const {
-      name = '', email = ''
-    } = await getGitUser()
+    const { name = '', email = '' } = await getGitUser()
     const jsonData = fse.readJsonSync(pkgPath)
     unnecessaryKey.forEach(key => delete jsonData[key])
 
@@ -135,7 +132,6 @@ class Creator {
         jsonData['dependencies'][item] = packageListOrigin[item]
       }
     }
-
     // 更新后的基本信息与源信息聚合
     Object.assign(jsonData, {
       name: this.name,
@@ -161,24 +157,23 @@ class Creator {
   }
   // 删除原有模板项目.git追踪
   async deleteGit(localPath) {
-    await fs.rmdir(`./${localPath}/.git`, { recursive: true }, err => {
-      // eslint-disable-next-line no-empty
-      if (!err) { } else console.log(`无法删除git文件追踪${err}`)
-    })
+    try {
+      await fs.rmdirSync(`./${localPath}/.git`, { recursive: true })
+    } catch (e) {
+      log.error(`无法删除对原有git文件的追踪:${e}`)
+    }
   }
-
-  /**
-     * @todo 安装依赖，执行first commit，提示用户cd目录运行项目
-     */
   async runApp() {
-    this.spinner.start('正在安装依赖')
-    await runCmd(`npm install`)
+    this.spinner.start('正在安装依赖...')
+    await runCmd(`${this.pkgManager} install`)
+    await this.createFirstCommit()
+    this.spinner.succeed('项目初始化完成,请输入:')
+    log.success(`cd ${this.name} && ${this.pkgManager} run dev`)
+  }
+  async createFirstCommit() {
     await runCmd(`git add .`)
     await runCmd(`git commit -m "feat: first commit"`)
-    this.spinner.succeed('脚手架初始化完成,请输入:')
-    console.log(chalk.green(`cd ${this.name} && npm run dev`))
   }
-
   // 简单模板下plugins配置--文件增强
   async usePlugins() {
     if (this.isChooseSimpleTemplate() && this.packageList.length > 0) {

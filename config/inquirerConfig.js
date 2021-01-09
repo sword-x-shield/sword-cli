@@ -17,6 +17,14 @@ module.exports = {
     message: '请选择模板: ',
     choices: templateList.map(i => i.name)
   },
+  // 包管理器参数
+  manager: {
+    type: 'list',
+    name: 'manager',
+    message: '请选择项目包管理器: ',
+    choices: ['yarn', 'npm'],
+    default: 'npm'
+  },
   // 文件夹已存在的名称的询问参数
   folderExist: [{
     type: 'list',
@@ -34,7 +42,7 @@ module.exports = {
     type: 'input',
     message: '请输入新的项目名称: '
   }],
-  // 可选依赖包
+  // 可选依赖包参数
   packageList: [{
     name: 'packageList',
     type: 'checkbox',
