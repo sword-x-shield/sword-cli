@@ -6,6 +6,7 @@ const fse = require('fs-extra')
 const git = require('git-promise')
 const chalk = require('chalk')
 const templateList = require('../config/template.json')
+const packageListOrigin = require('../config/packageList.json')
 const {
   exit
 } = require('process')
@@ -14,8 +15,10 @@ const {
   parseCmdParams,
   log,
   getGitUser,
-  runCmd
+  runCmd,
+  genTargetPath
 } = require('../utils')
+const plugins = require('../plugin')
 
 class Creator {
   constructor(name = undefined, destination, ops = {}) {
@@ -37,6 +40,7 @@ class Creator {
     await this.askAndSetPackage()
     await this.checkFolderExist()
     await this.download()
+    await this.usePlugins()
     await this.updatePkgFile()
     await this.initGit()
     await this.runApp()
@@ -51,23 +55,27 @@ class Creator {
     const { template } = await inquirer.prompt(InquirerConfig.template)
     this.template = template
   }
+
+  // 是否选择简易模板
+  isChooseSimpleTemplate() {
+    const simpleTemplate = ['vue2TS']
+    if (simpleTemplate.includes(this.template)) return true
+    return false
+  }
+
   // 非完整模板询问是否安装其他依赖
   async askAndSetPackage() {
-    const simpleTemplate = ['vue2TS']
-    if (simpleTemplate.includes(this.template)) {
+    if (this.isChooseSimpleTemplate()) {
       const {
         packageList
       } = await inquirer.prompt(InquirerConfig.packageList)
       this.packageList = packageList
     }
   }
-  // 生成目标文件夹的绝对路径
-  genTargetPath(relPath) {
-    return path.resolve(process.cwd(), relPath)
-  }
+
   // 获取绝对路径
   getAbsPath() {
-    return this.genTargetPath(this.name)
+    return genTargetPath(this.name)
   }
   // 检查文件夹是否存在
   async checkFolderExist() {
@@ -112,6 +120,7 @@ class Creator {
       this.spinner.stop()
     }
   }
+
   // 更新package.json中的信息
   async updatePkgFile() {
     this.spinner.start('正在更新package.json...')
@@ -120,15 +129,24 @@ class Creator {
     const {
       name = '', email = ''
     } = await getGitUser()
-
     const jsonData = fse.readJsonSync(pkgPath)
     unnecessaryKey.forEach(key => delete jsonData[key])
+
+    // 选择简易模板且选择额外拓展包
+    if (this.isChooseSimpleTemplate() && this.packageList.length > 0) {
+      for (const item of this.packageList) {
+        jsonData['dependencies'][item] = packageListOrigin[item]
+      }
+    }
+
+    // 更新后的基本信息与源信息聚合
     Object.assign(jsonData, {
       name: this.name,
       author: name && email ? `${name} ${email}` : '',
       provide: true,
       version: '1.0.0'
     })
+
     await fse.writeJsonSync(pkgPath, jsonData, {
       spaces: '\t'
     })
@@ -162,6 +180,15 @@ class Creator {
     await runCmd(`git commit -m "feat: first commit"`)
     this.spinner.succeed('脚手架初始化完成,请输入:')
     console.log(chalk.green(`cd ${this.name} && npm run dev`))
+  }
+
+  // 简单模板下plugins配置--文件增强
+  async usePlugins() {
+    if (this.isChooseSimpleTemplate() && this.packageList.length > 0) {
+      for (const item of this.packageList) {
+        plugins[item](this.name)
+      }
+    }
   }
 }
 module.exports = Creator

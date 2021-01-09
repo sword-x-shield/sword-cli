@@ -1,5 +1,6 @@
 const chalk = require('chalk')
 const childProcess = require('child_process')
+const path = require('path')
 // 封装log函数
 exports.log = {
   warning(msg = '') {
@@ -58,4 +59,9 @@ exports.runCmd = cmd => {
       return resolve(...arg)
     })
   })
+}
+
+// 生成目标文件夹的绝对路径
+exports.genTargetPath = relPath => {
+  return path.resolve(process.cwd(), relPath)
 }
