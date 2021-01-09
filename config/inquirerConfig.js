@@ -14,14 +14,14 @@ module.exports = {
   template: {
     type: 'list',
     name: 'template',
-    message: '请选择模板:',
-    choices: Object.keys(templateList)
+    message: '请选择模板: ',
+    choices: templateList.map(i => i.name)
   },
   // 文件夹已存在的名称的询问参数
   folderExist: [{
     type: 'list',
     name: 'recover',
-    message: '当前文件夹已存在，请选择操作：',
+    message: '当前文件夹已存在，请选择操作: ',
     choices: [
       { name: '创建一个新的文件夹', value: 'newFolder' },
       { name: '覆盖', value: 'cover' },
@@ -38,7 +38,7 @@ module.exports = {
   packageList: [{
     name: 'packageList',
     type: 'checkbox',
-    message: '您当前选择为简易模板，请选择你需要额外加载的包：',
+    message: '您当前选择为简易模板，请选择你需要额外加载的包: ',
     choices: Object.keys(packageList)
   }]
 }

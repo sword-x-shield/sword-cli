@@ -1,4 +1,9 @@
-{
-  "vue2TS":"https://github.com/puppet-666/ts-webpack-template.git",
-  "zhsj":"https://github.com/zhsj2017/elder-university.git"
-}
+
+[
+  {
+    "name": "vue2TS",
+    "description": "集成了TypeScript的Vue 2.x的模板项目",
+    "simple": true,
+    "url": "https://github.com/puppet-666/ts-webpack-template.git"
+  }
+]

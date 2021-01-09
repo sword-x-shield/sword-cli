@@ -58,17 +58,14 @@ class Creator {
 
   // 是否选择简易模板
   isChooseSimpleTemplate() {
-    const simpleTemplate = ['vue2TS']
-    if (simpleTemplate.includes(this.template)) return true
-    return false
+    const selectedTemplate = templateList.find(i => i === this.template)
+    return selectedTemplate.simple || false
   }
 
   // 非完整模板询问是否安装其他依赖
   async askAndSetPackage() {
     if (this.isChooseSimpleTemplate()) {
-      const {
-        packageList
-      } = await inquirer.prompt(InquirerConfig.packageList)
+      const { packageList } = await inquirer.prompt(InquirerConfig.packageList)
       this.packageList = packageList
     }
   }
