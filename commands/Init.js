@@ -40,8 +40,8 @@ class Creator {
     await this.download()
     await this.usePlugins()
     await this.updatePkgFile()
-    // await this.initGit()
-    // await this.runApp()
+    await this.initGit()
+    await this.runApp()
   }
   // 询问并设置项目名称
   async askAndSetName() {
@@ -131,6 +131,7 @@ class Creator {
 
     // 选择简易模板且选择额外拓展包
     if (this.isChooseSimpleTemplate() && this.packageList.length > 0) {
+      // todo--后续考虑模板vue版本问题，判断引入的依赖版本
       for (const item of this.packageList) {
         jsonData['dependencies'][item] = packageListOrigin[item]
       }
