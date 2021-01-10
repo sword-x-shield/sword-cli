@@ -11,11 +11,13 @@ async function useVuex(relPath) {
   // 重写mian文件import store
   if (await fse.pathExistsSync(path.resolve(targetPath, 'src/main.js') === true)) {
     fs.writeFileSync(path.resolve(targetPath, 'src/main.js'), templateString)
+    // 导入store仓库
+    await fse.copySync(path.resolve(path.join(__dirname, './packages/cli-plugin-vuex/generator/js')), path.resolve(targetPath, 'src'))
   } else {
     fs.writeFileSync(path.resolve(targetPath, 'src/main.ts'), templateString)
+    // 导入store仓库
+    await fse.copySync(path.resolve(path.join(__dirname, './packages/cli-plugin-vuex/generator/ts')), path.resolve(targetPath, 'src'))
   }
-  // 导入store仓库
-  await fse.copySync(path.resolve(path.join(__dirname, './packages/cli-plugin-vuex/generator')), path.resolve(targetPath, 'src'))
 }
 
 /**
