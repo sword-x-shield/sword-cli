@@ -20,6 +20,7 @@
     "chalk": "^4.1.0",
     "commander": "^6.2.1",
     "eslint": "^7.17.0",
+    "execa": "^5.0.0",
     "fs-extra": "^9.0.1",
     "git-promise": "^1.0.0",
     "inquirer": "^7.3.3",

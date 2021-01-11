@@ -12,6 +12,7 @@ const {
   parseCmdParams,
   log,
   getGitUser,
+  runInstallCmd,
   runCmd,
   genTargetPath
 } = require('../utils')
@@ -168,8 +169,15 @@ class Creator {
     }
   }
   async runApp() {
-    this.spinner.start('正在安装依赖...')
-    await runCmd(`${this.pkgManager} install`)
+    // this.spinner.start('正在安装依赖...\n')
+    console.log('正在安装依赖...')
+    // 有个小问题..子进程结束后导致child.stdout.on事件无法获取..只能手动捕获
+    try {
+      await runInstallCmd(this.pkgManager, 'install')
+    // eslint-disable-next-line no-empty
+    } catch (error) {
+
+    }
     await this.createFirstCommit()
     this.spinner.succeed('项目初始化完成,请输入:')
     log.success(`cd ${this.name} && ${this.pkgManager} run dev`)

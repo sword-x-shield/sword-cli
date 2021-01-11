@@ -1,5 +1,6 @@
 const chalk = require('chalk')
 const childProcess = require('child_process')
+const execa = require('execa')
 const path = require('path')
 // 封装log函数
 exports.log = {
@@ -58,6 +59,37 @@ exports.runCmd = cmd => {
       if (err) return reject(err)
       return resolve(...arg)
     })
+  })
+}
+
+// 运行cmd命令
+exports.runInstallCmd = async(cmd, arg) => {
+  const PACKAGE_MANAGER_CONFIG = {
+    npm: {
+      install: ['install', '--loglevel', 'error'],
+      add: ['install', '--loglevel', 'error'],
+      upgrade: ['update', '--loglevel', 'error'],
+      remove: ['uninstall', '--loglevel', 'error']
+    },
+    yarn: {
+      install: [],
+      add: ['add'],
+      upgrade: ['upgrade'],
+      remove: ['remove']
+    }
+  }
+  const cwd = process.cwd()
+  const child = await execa(cmd, PACKAGE_MANAGER_CONFIG[cmd][arg], {
+    cwd,
+    stdio: ['inherit', 'inherit', 'inherit']
+  })
+  child.stdout.on('data', buffer => {
+    process.stdout.write(buffer)
+  })
+  child.on('close', code => {
+    if (code !== 0) {
+      throw new Error(`command failed: ${cmd}`)
+    }
   })
 }
 
