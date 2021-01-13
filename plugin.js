@@ -27,7 +27,12 @@ async function useAxios() {
 
 }
 
+async function useEslint() {
+
+}
+
 module.exports = {
   vuex: useVuex,
-  axios: useAxios
+  axios: useAxios,
+  eslint: useEslint
 }

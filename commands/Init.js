@@ -5,7 +5,7 @@ const fs = require('fs')
 const fse = require('fs-extra')
 const git = require('git-promise')
 const templateList = require('../config/template.json')
-const packageListOrigin = require('../config/packageList.json')
+const { packageList } = require('../config/packageList.js')
 const { exit } = require('process')
 const InquirerConfig = require('../config/inquirerConfig')
 const {
@@ -134,7 +134,11 @@ class Creator {
     if (this.isChooseSimpleTemplate() && this.packageList.length > 0) {
       // todo--后续考虑模板vue版本问题，判断引入的依赖版本
       for (const item of this.packageList) {
-        jsonData['dependencies'][item] = packageListOrigin[item]
+        // 是否单独包--无其他附加依赖包
+        if (packageList[item].isSingle) { jsonData['dependencies'][item] = packageList[item].version } else {
+          // 多包遍历children来添加
+
+        }
       }
     }
     // 更新后的基本信息与源信息聚合

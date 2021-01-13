@@ -1,5 +1,5 @@
 const templateList = require('./template.json')
-const packageList = require('./packageList.json')
+const { packageList } = require('./packageList.js')
 module.exports = {
   // 输入项目名参数
   name: {
@@ -56,5 +56,35 @@ module.exports = {
     type: 'checkbox',
     message: '您当前选择为简易模板，请选择你需要额外加载的包: ',
     choices: Object.keys(packageList)
+  }],
+  // 询问eslint规则
+  eslintType: [{
+    name: 'eslintType',
+    type: 'list',
+    message: '请选择需要的eslint规则',
+    choices: [
+      { name: 'ESlint + Airbnb配置', value: 'airbnb' },
+      { name: 'ESlint + 标准配置', value: 'standard' }
+    ]
+  }],
+  // eslint校验时机
+  eslintTime: [{
+    name: 'eslintTime',
+    type: 'checkbox',
+    message: '请选择eslint的校验时机（可多选）',
+    choices: [
+      { name: '在保存时校验', value: 'save' },
+      { name: '在git commit时校验并修复', value: 'commit' }
+    ]
+  }],
+  // 询问配置文件放置位置
+  configFilePlace: [{
+    name: 'configFilePlace',
+    type: 'list',
+    message: '请选择ESlint配置文件放置的位置',
+    choices: [
+      { name: '放置在单独的配置文件', value: 'single' },
+      { name: '放置在package.json中', value: 'package' }
+    ]
   }]
 }
