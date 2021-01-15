@@ -1,6 +1,7 @@
 const chalk = require('chalk')
 const childProcess = require('child_process')
 const execa = require('execa')
+const { existsSync } = require('fs')
 const path = require('path')
 // 封装log函数
 exports.log = {
@@ -96,4 +97,39 @@ exports.runInstallCmd = async(cmd, arg) => {
 // 生成目标文件夹的绝对路径
 exports.genTargetPath = relPath => {
   return path.resolve(process.cwd(), relPath)
+}
+
+exports.getWebpcakConfig = (configPath) => {
+  // 如果指定配置文件路径
+  if (configPath) {
+    // 判断前缀如果是本地文件则进行路径拼接进行获取
+    if (this.isLocalPath()) {
+      configPath = this.getLocalPath(configPath)
+    } else {
+      throw new Error(`--config \` ${configPath}\` 不符合本地文件格式 `)
+    }
+    if (existsSync(configPath)) {
+      this.log.error(`\n File not exist: ${configPath}\n`)
+    }
+  } else {
+    // 兜底---走默认路径
+    configPath = path.resolve('.', 'sword.config.js')
+    if (!existsSync(configPath)) { // 兼容webpack.config.js
+      configPath = path.resolve('.', 'webpack.config.js')
+    }
+    if (!existsSync(configPath)) {
+      configPath = null
+    }
+  }
+
+  return configPath
+}
+
+exports.isLocalPath = (templatePath) => {
+  return /^[./]|(^[a-zA-Z]:)/.test(templatePath)
+}
+
+exports.getLocalPath = (templatePath) => {
+  // 传入绝对路径直接使用否则进行路径拼接
+  return path.isAbsolute(templatePath) ? templatePath : path.normalize(path.join(process.cwd(), templatePath))
 }
