@@ -19,3 +19,18 @@ npm link
 ```
 sword init 
 ```
+
+### sword-cli Todo
+- [ ] 更多的模板
+    - [ ] vue2-mobile
+    - [ ] vue2-admin
+    - [ ] vue2-mpa-simple
+- [ ] 更多的plugin
+    - [ ] eslint
+    - [x] axios
+- [ ] 基础工程能力
+    - [ ] start command
+    - [ ] start command
+    - [ ] build command
+    - [ ] lint command
+
