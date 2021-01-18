@@ -31,6 +31,9 @@ sword
     - [x] axios
 - [ ] 基础工程能力
     - [ ] start command
+        - [x] start命令初步能力
+        - [ ] 支持webpack 5
+        - [ ] 完善webpack base config
     - [ ] start command
     - [ ] build command
     - [ ] lint command

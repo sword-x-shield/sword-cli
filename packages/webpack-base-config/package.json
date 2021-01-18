@@ -1,0 +1,19 @@
+{
+  "name": "webpack-base-config",
+  "version": "1.0.0",
+  "description": "sword-cli内webpack基础配置",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "clean-webpack-plugin": "^3.0.0",
+    "html-webpack-plugin": "^4.5.0",
+    "vue-loader": "^15.7.1",
+    "webpack-bundle-analyzer": "^3.6.0",
+    "webpackbar": "^5.0.0-3"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

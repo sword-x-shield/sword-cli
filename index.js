@@ -3,7 +3,7 @@ const { program } = require('commander')
 
 const InitCommand = require('./commands/Init')
 const ListCommand = require('./commands/List')
-// const StartCommand = require('./commands/Start')
+const StartCommand = require('./commands/Start')
 
 const path = require('path')
 const fs = require('fs')
@@ -34,22 +34,22 @@ program
 
 program
   .command('list')
-  .description('🗒 列出当前库中包含的模板/可选库等等')
+  .description('🗒  列出当前库中包含的模板/可选库等等')
   .option('-t, --template', '列出当前脚手架所有的项目模板')
   .action(destination => {
     new ListCommand(destination)
   })
 
 // todo start command
-// program
-//   .name('start')
-//   .description('🚁 启动本地服务构建并运行项目')
-//   .version(packageInfo.version, '-v, --version')
-//   .usage('<command> [options]')
-//   .option('-c, --config <type>', '指定项目构建配置文件')
-//   .action((destination) => {
-//     new StartCommand(destination)
-//   })
+program
+  .command('start')
+  .description('🚁 启动本地服务构建并运行项目')
+  .version(packageInfo.version, '-v, --version')
+  .usage('<command> [options]')
+  .option('-c, --config <type>', '指定项目构建配置文件')
+  .action((destination) => {
+    new StartCommand(destination)
+  })
 
 program.parse(process.argv)// 解析变量
 // 什么都不输入时显示帮助

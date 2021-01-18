@@ -17,8 +17,10 @@
   "private": "false",
   "license": "ISC",
   "dependencies": {
+    "address": "^1.1.2",
     "chalk": "^4.1.0",
     "commander": "^6.2.1",
+    "default-gateway": "^6.0.3",
     "eslint": "^7.17.0",
     "execa": "^5.0.0",
     "fs-extra": "^9.0.1",
@@ -27,8 +29,10 @@
     "open": "^7.3.1",
     "ora": "^5.2.0",
     "portfinder": "^1.0.28",
-    "webpack": "^5.14.0",
-    "webpack-dev-server": "^3.11.2"
+    "webpack": "^4.39.3",
+    "webpack-dev-server": "^3.8.0"
   },
-  "peerDependencies": {}
+  "devDependencies": {
+    "lerna": "^3.22.1"
+  }
 }

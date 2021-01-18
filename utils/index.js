@@ -3,6 +3,8 @@ const childProcess = require('child_process')
 const execa = require('execa')
 const { existsSync } = require('fs')
 const path = require('path')
+const address = require('address')
+const defaultGateway = require('default-gateway')
 // 封装log函数
 exports.log = {
   warning(msg = '') {
@@ -13,6 +15,24 @@ exports.log = {
   },
   success(msg = '') {
     console.log(chalk.magenta(`${msg}`))
+  },
+  logObj(obj) {
+    let result = ''
+    Object.entries(obj).forEach(([key, val]) => {
+      if (val === undefined) {
+        return
+      }
+      result += '\n'
+      result += `${key}:\t${(formatVal(val))}`
+    })
+    console.log(result)
+
+    function formatVal(val) {
+      if (/https?/.test(val)) {
+        return chalk.cyan(val)
+      }
+      return val
+    }
   }
 }
 
@@ -132,4 +152,18 @@ exports.isLocalPath = (templatePath) => {
 exports.getLocalPath = (templatePath) => {
   // 传入绝对路径直接使用否则进行路径拼接
   return path.isAbsolute(templatePath) ? templatePath : path.normalize(path.join(process.cwd(), templatePath))
+}
+
+/**
+ * 获得本机的内网ipv4地址
+ * @returns {string | undefined} 如果为undefined则代表找不到
+ */
+exports.networkAddress = () => {
+  const result = defaultGateway.v4.sync()
+  const lanUrlForConfig = address.ip(result && result.interface)
+  if (lanUrlForConfig) {
+    return lanUrlForConfig
+  } else {
+    return undefined
+  }
 }
