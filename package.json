@@ -26,6 +26,7 @@
     "fs-extra": "^9.0.1",
     "git-promise": "^1.0.0",
     "inquirer": "^7.3.3",
+    "leven": "^3.1.0",
     "open": "^7.3.1",
     "ora": "^5.2.0",
     "portfinder": "^1.0.28",

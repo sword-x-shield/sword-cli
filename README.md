@@ -30,6 +30,7 @@ sword
     - [ ] eslint
     - [x] axios
 - [ ] 基础工程能力
+    - [x] 命令模糊提示
     - [ ] start command
         - [x] start命令初步能力
         - [ ] 支持webpack 5
