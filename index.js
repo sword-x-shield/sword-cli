@@ -4,6 +4,7 @@ const { program } = require('commander')
 const InitCommand = require('./commands/Init')
 const ListCommand = require('./commands/List')
 const StartCommand = require('./commands/Start')
+const BuildCommand = require('./commands/Build')
 
 const path = require('path')
 const fs = require('fs')
@@ -42,15 +43,22 @@ program
     new ListCommand(destination)
   })
 
-// todo start command
 program
   .command('start')
   .description('🚁 启动本地服务构建并运行项目')
-  .version(packageInfo.version, '-v, --version')
   .usage('<command> [options]')
   .option('-c, --config <type>', '指定项目构建配置文件')
   .action((destination) => {
     new StartCommand(destination)
+  })
+
+program
+  .command('build')
+  .description('📦 对项目资源进行打包构建')
+  .usage('<command> [options]')
+  .option('-c, --config <type>', '指定项目构建配置文件')
+  .action((destination) => {
+    new BuildCommand(destination)
   })
 
 // 匹配未知的命令

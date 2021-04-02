@@ -15,6 +15,7 @@ class Creator {
     this.cmdParams = parseCmdParams(destination)
     this.init()
   }
+
   async init() {
     log.success('🚀🚀🚀  启动项目')
     const finalConfig = await this.setWebpackConfig()

@@ -6,9 +6,11 @@ class Creator {
     this.cmdParams = parseCmdParams(destination)
     this.init()
   }
+
   async init() {
     this.logList()
   }
+
   /**
    * @todo 列出可选包等列表。
    */

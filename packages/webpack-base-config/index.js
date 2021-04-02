@@ -1,11 +1,16 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
+const path = require('path')
+
+const isBuild = process.env.NODE_ENV === 'production'
 
 module.exports = {
-  entry: './src/main.ts',
+  entry: './src/index.js',
   output: {
-    filename: 'main.js',
-    publicPath: '/'
+    path: path.resolve(process.cwd(), 'dist'),
+    filename: 'static/[name].[hash].js',
+    chunkFilename: 'static/[name].[hash].js',
+    publicPath: isBuild ? './' : '/'
   },
   resolve: {
     extensions: ['.ts', '.tsx', '.js']
@@ -58,7 +63,7 @@ module.exports = {
       exclude: /node_modules/
     }]
   },
-  devtool: process.env.NODE_ENV === 'production' ? false : 'inline-source-map',
+  devtool: isBuild ? false : 'inline-source-map',
   devServer: {
     contentBase: './dist',
     compress: false,
