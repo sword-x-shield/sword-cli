@@ -119,17 +119,18 @@ exports.genTargetPath = relPath => {
   return path.resolve(process.cwd(), relPath)
 }
 
-exports.getWebpcakConfig = (configPath) => {
+exports.getWebpcakConfig = async(configPath) => {
   // 如果指定配置文件路径
   if (configPath) {
     // 判断前缀如果是本地文件则进行路径拼接进行获取
-    if (this.isLocalPath()) {
+    if (this.isLocalPath(configPath)) {
       configPath = this.getLocalPath(configPath)
     } else {
       throw new Error(`--config \` ${configPath}\` 不符合本地文件格式 `)
     }
-    if (existsSync(configPath)) {
-      this.log.error(`\n File not exist: ${configPath}\n`)
+    const flag = await existsSync(configPath)
+    if (!flag) {
+      throw new Error(`\n File not exist: ${configPath}\n`)
     }
   } else {
     // 兜底---走默认路径

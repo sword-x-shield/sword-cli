@@ -1,15 +1,5 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
-const path = require('path')
-
-const externals = [
-  'https://cdn.bootcdn.net/ajax/libs/vue/2.6.12/vue.min.js',
-  'https://cdn.bootcdn.net/ajax/libs/vue-router/3.1.6/vue-router.min.js'
-]
-const external = {
-  'vue': 'Vue',
-  'vue-router': 'VueRouter'
-}
 
 module.exports = {
   entry: './src/main.ts',
@@ -17,13 +7,8 @@ module.exports = {
     filename: 'main.js',
     publicPath: '/'
   },
-  externals: process.env.NODE_ENV === 'production' ? external : {},
   resolve: {
-    extensions: ['.ts', '.tsx', '.js'],
-    alias: {
-      '@/components': path.resolve(__dirname, './src/components'),
-      '@/utils': path.resolve(__dirname, './src/common/utils')
-    }
+    extensions: ['.ts', '.tsx', '.js']
   },
   module: {
     rules: [{
@@ -87,8 +72,7 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: './public/index.html',
       favicon: './public/favicon.ico',
-      env: process.env.NODE_ENV === 'production' ? 'pro' : 'dev',
-      cdn: externals
+      env: process.env.NODE_ENV === 'production' ? 'pro' : 'dev'
     }),
     new VueLoaderPlugin() // vue-loader 15 后迁移 https://vue-loader.vuejs.org/migrating.html#a-plugin-is-now-required
   ]

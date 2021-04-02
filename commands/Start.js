@@ -25,8 +25,13 @@ class Creator {
    * 获取webpack配置项
    */
   async setWebpackConfig() {
-    const configPath = await getWebpcakConfig(this.cmdParams.config)
-    // 用户自定义配置文件则读取，否则使用脚手架基础webpack配置
+    let configPath
+    try {
+      configPath = await getWebpcakConfig(this.cmdParams.config)
+      // 用户自定义配置文件则读取，否则使用脚手架基础webpack配置
+    } catch (err) {
+      return log.error(err)
+    }
 
     // todo  webpackBaseConfig尚未完善，目前默认用户使用-c指定webpack文件，或者根路径具有webpack.config.js或sword.config.js
     const rawConfig = configPath ? require(configPath) : webpackBaseConfig
