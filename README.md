@@ -35,6 +35,6 @@ sword
         - [x] start命令初步能力
         - [ ] 支持webpack 5
         - [ ] 完善webpack base config
-    - [ ] build command
+    - [x] build command
     - [ ] lint command
 
